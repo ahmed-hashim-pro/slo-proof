@@ -1,0 +1,39 @@
+# Four rules for a 99.9% availability SLO, replayed by
+#   slo-proof compare examples/sli.csv examples/incidents.csv examples/rules.toml
+
+[slo]
+target = 0.999
+period = "30d"
+
+# What many teams start with: page when more than 1% of requests fail for 5 minutes.
+[[rule]]
+name = "static-1pct"
+for = "5m"
+  [[rule.when]]
+  error_ratio = 0.01
+  windows = ["5m"]
+
+# The SRE Workbook's fast-burn page alone: 2% of the monthly budget in an hour.
+[[rule]]
+name = "fast-burn-only"
+  [[rule.when]]
+  burn = 14.4
+  windows = ["1h", "5m"]
+
+# A single 6-hour window at 6x, without the short window that lets it reset.
+[[rule]]
+name = "6x-over-6h"
+  [[rule.when]]
+  burn = 6
+  windows = ["6h"]
+
+# The Workbook's recommended paging rule: fast burn OR medium burn, each
+# confirmed by a short window so it stops firing soon after recovery.
+[[rule]]
+name = "workbook-multiwindow"
+  [[rule.when]]
+  burn = 14.4
+  windows = ["1h", "5m"]
+  [[rule.when]]
+  burn = 6
+  windows = ["6h", "30m"]

@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slo-proof"
+version = "0.1.0"
+description = "Replay past SLI data against alert rules: which incidents they would have caught, how late, and how often they would have paged for nothing"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = []
+keywords = ["slo", "sre", "alerting", "prometheus", "burn-rate"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6", "ruff>=0.6", "mypy>=1.11"]
+
+[project.scripts]
+slo-proof = "slo_proof.cli:main"
+
+[project.urls]
+Repository = "https://github.com/ahmed-hashim-pro/slo-proof"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+# The formatter wraps code; what is left over 120 is string content (SVG markup, messages).
+ignore = ["E501"]
+
+[tool.mypy]
+strict = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
