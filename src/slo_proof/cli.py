@@ -63,7 +63,7 @@ def cmd_replay(args: argparse.Namespace) -> int:
             f"  {rr.pages} pages: {len(rr.true_pages)} during incidents, {len(rr.late_pages)} after one ended, "
             f"{len(rr.false_pages)} with no incident; firing {format_duration(rr.firing_outside)} with no incident open"
         )
-    print("\nbudget spent is a share of the 30-day error budget at this traffic.")
+    print(f"\nbudget spent is a share of the {cfg.period_days}-day error budget at this traffic.")
     return 1 if args.fail_on_miss and missed_any else 0
 
 

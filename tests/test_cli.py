@@ -28,6 +28,13 @@ def test_bad_input_names_the_line(tmp_path, capsys):
     assert "line 3: gap of 4 minutes" in capsys.readouterr().err
 
 
+def test_replay_names_the_budget_period(tmp_path, capsys):
+    rules = tmp_path / "rules.toml"
+    rules.write_text(Path(EX[2]).read_text().replace('period = "30d"', 'period = "7d"'))
+    assert main(["replay", EX[0], EX[1], str(rules), "--rule", "fast-burn-only"]) == 0
+    assert "share of the 7-day error budget" in capsys.readouterr().out
+
+
 def test_unknown_rule(capsys):
     assert main(["replay", *EX, "--rule", "nope"]) == 2
     assert "no rule named 'nope'" in capsys.readouterr().err
