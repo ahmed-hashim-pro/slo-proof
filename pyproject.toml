@@ -14,7 +14,7 @@ keywords = ["slo", "sre", "alerting", "prometheus", "burn-rate"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "hypothesis>=6", "ruff>=0.6", "mypy>=1.11"]
+dev = ["pytest==9.1.1", "hypothesis==6.169.0", "ruff==0.17.0", "mypy==2.4.0"]
 
 [project.scripts]
 slo-proof = "slo_proof.cli:main"

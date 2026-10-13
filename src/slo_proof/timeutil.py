@@ -40,7 +40,7 @@ def parse_duration(text: str) -> int:
 
 
 def format_duration(seconds: float) -> str:
-    seconds = int(round(seconds))
+    seconds = round(seconds)
     if seconds < 3600:
         return f"{seconds // 60}m"
     h, m = divmod(seconds // 60, 60)
