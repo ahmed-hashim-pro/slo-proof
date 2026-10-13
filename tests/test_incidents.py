@@ -36,8 +36,9 @@ def test_rejects(row, needle):
 
 
 def test_rejects_overlap():
-    with pytest.raises(InputError, match="overlaps 'a'"):
+    with pytest.raises(InputError, match="overlaps 'a'") as e:
         parse(
             HEAD
             + "2026-03-02T01:00:00Z,2026-03-02T02:00:00Z,page,a\n2026-03-02T01:30:00Z,2026-03-02T03:00:00Z,page,b\n"
         )
+    assert e.value.line == 3, str(e.value)

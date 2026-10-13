@@ -28,6 +28,13 @@ def test_bad_input_names_the_line(tmp_path, capsys):
     assert "line 3: gap of 4 minutes" in capsys.readouterr().err
 
 
+def test_rules_error_names_the_line(tmp_path, capsys):
+    bad = tmp_path / "rules.toml"
+    bad.write_text(Path(EX[2]).read_text().replace('windows = ["6h"]', 'windwos = ["6h"]'))
+    assert main(["check", str(bad)]) == 2
+    assert "rules.toml: line 28: rule '6x-over-6h' when 1: unknown key 'windwos'" in capsys.readouterr().err
+
+
 def test_replay_names_the_budget_period(tmp_path, capsys):
     rules = tmp_path / "rules.toml"
     rules.write_text(Path(EX[2]).read_text().replace('period = "30d"', 'period = "7d"'))

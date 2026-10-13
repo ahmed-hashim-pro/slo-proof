@@ -29,22 +29,24 @@ def test_converts_and_sums_series():
 
 
 @pytest.mark.parametrize(
-    "total,bad,needle",
+    "total,bad,line,needle",
     [
-        ("{", export([(60, 1)]), "not JSON"),
-        (json.dumps({"status": "error"}), export([(60, 1)]), "status"),
+        ("{", export([(60, 1)]), 1, "not JSON"),
+        (json.dumps({"status": "error"}), export([(60, 1)]), 0, "status"),
         (
             json.dumps({"status": "success", "data": {"resultType": "vector", "result": []}}),
             export([(60, 1)]),
+            0,
             "range query",
         ),
-        (export([(60, 1)]), export([(120, 1)]), "different times"),
-        (export([(60, 1), (180, 1)]), export([(60, 1), (180, 1)]), "not one minute apart"),
-        (export([(90, 1)]), export([(90, 1)]), "step=60"),
-        (export([(60, -1)]), export([(60, 0)]), "non-negative"),
+        (export([(60, 1)]), export([(120, 1)]), 0, "different times"),
+        (export([(60, 1), (180, 1)]), export([(60, 1), (180, 1)]), 0, "not one minute apart"),
+        (export([(90, 1)]), export([(90, 1)]), 0, "step=60"),
+        (export([(60, -1)]), export([(60, 0)]), 0, "non-negative"),
     ],
 )
-def test_rejects(total, bad, needle):
+def test_rejects(total, bad, line, needle):
     with pytest.raises(InputError) as e:
         to_series(total, bad)
-    assert needle in str(e.value)
+    assert e.value.line == line, str(e.value)
+    assert needle in e.value.message, str(e.value)

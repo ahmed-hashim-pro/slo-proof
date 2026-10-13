@@ -140,7 +140,8 @@ A `when` takes `burn`, a multiple of the budget rate (1 − target), or
 `error_ratio`, an absolute fraction. That covers a static threshold, a
 single-window burn rate, and multiwindow, multi-burn-rate alerts.
 
-Every input is parsed strictly, and errors give a file and line:
+Every input is parsed strictly. Errors in the CSVs and the rules give a
+file and line:
 
 ```
 $ slo-proof compare gappy.csv examples/incidents.csv examples/rules.toml
@@ -150,7 +151,8 @@ slo-proof: gappy.csv: line 3: gap of 4 minutes after 2026-03-02 00:00; write a r
 The same goes for an unknown key in the rules (a misspelt `windows` would
 otherwise make a rule that silently never fires), a timestamp without a
 timezone, overlapping incidents, and a burn rate that would need an error
-ratio above 100%.
+ratio above 100%. Errors in a Prometheus export name the file, and a line
+only when the JSON itself is malformed.
 
 ## How it decides
 
@@ -231,7 +233,7 @@ them on eight different seeds:
 
 ## How it is tested
 
-`pytest` runs 67 tests in about 8 seconds.
+`pytest` runs 71 tests in under 10 seconds.
 
 - **The evaluator against a reference.** The reference is written another
   way: it sums each window by hand and fires wherever the expression held at
@@ -251,10 +253,11 @@ them on eight different seeds:
   - budget arithmetic
   - firing time with no incident
   - ranking order
-- **Parsers.** 42 cases of input that must be refused, each checked for its
-  line number and message: gaps, duplicates, missing timezones, typos in
-  rule keys, impossible burn rates, overlapping incidents, malformed
-  Prometheus exports.
+- **Parsers.** 43 cases of input that must be refused, each checked for its
+  message and its line number (or for having none, when the problem is the
+  whole file or a Prometheus export's contents): gaps, duplicates, missing
+  timezones, typos in rule keys, impossible burn rates, overlapping
+  incidents, malformed Prometheus exports.
 - **The example month.** It's reproducible from its seed, the committed
   files match what `synth` writes, and the README's findings hold on eight
   seeds.
